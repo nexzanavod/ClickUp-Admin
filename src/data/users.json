@@ -1,0 +1,34 @@
+[
+  {
+    "id": "user-1",
+    "name": "Navod",
+    "email": "naod@example.com",
+    "password": "nav@123new",
+    "position": "Team Lead",
+    "image": "https://avatars.githubusercontent.com/u/51057557?v=4"
+  },
+  {
+    "id": "user-2",
+    "name": "Jesmer Basanes",
+    "email": "jesmer@wingmancreative.com.au",
+    "password": "jes@123new",
+    "position": "Team Lead",
+    "image": "https://i.ibb.co/27JJCdQ8/112.jpg"
+  },
+  {
+    "id": "user-4",
+    "name": "Nick Reddaway",
+    "email": "nick@wingmancreative.com.au",
+    "password": "nick@123new",
+    "position": "General Manager",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRC_wv_LPmg4GrWKvyd7s-sMNhcL6ngzrFi1Q&s"
+  },
+{
+    "id": "user-5",
+    "name": "Chloe Morrison",
+    "email": "chloe@wingmancreative.com.au",
+    "password": "chloe@123new",
+    "position": "Digital Marketing & Strategy Director",
+    "image": "https://i.ibb.co/Pv51Db0Z/11.jpg"
+  }
+]
