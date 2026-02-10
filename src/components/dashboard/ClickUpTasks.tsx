@@ -106,12 +106,18 @@ export default function ClickUpTasks() {
         resolvedItems: 0,
         totalItems: 0,
         subTasks: [],
+        checklistGroups: [],
         percent: 0,
       };
     }
 
     const checklists = task.checklists ?? [];
     const subTasks = checklists.flatMap((list) => list.items ?? []);
+    const checklistGroups = checklists.map((list) => ({
+      id: list.id,
+      name: list.name,
+      items: list.items ?? [],
+    }));
     const totalItems = checklists.reduce(
       (sum, list) => sum + (list.items?.length ?? 0),
       0
@@ -127,6 +133,7 @@ export default function ClickUpTasks() {
       resolvedItems,
       totalItems,
       subTasks,
+      checklistGroups,
       percent,
     };
   };
@@ -307,35 +314,52 @@ export default function ClickUpTasks() {
               </span>
             </div>
 
-            <div className="mt-4 space-y-2">
-              {selectedSummary.subTasks.map((item) => (
-                <div
-                  key={item.id}
-                  className={`flex items-center justify-between rounded-lg border px-4 py-3 text-sm ${
-                    item.resolved
-                      ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/40 dark:bg-emerald-500/10 dark:text-emerald-200"
-                      : "border-slate-100 text-slate-600 dark:border-slate-800 dark:text-slate-300"
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`h-2 w-2 rounded-full ${
-                        item.resolved ? "bg-emerald-500" : "bg-rose-400"
-                      }`}
-                    />
-                    <div>
-                      <span>{item.name}</span>
-                      <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                        {item.assignee?.username ?? "Unassigned"}
-                      </div>
-                    </div>
+            <div className="mt-4 space-y-4">
+              {selectedSummary.checklistGroups.map((group) => (
+                <div key={group.id} className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+                      {group.name}
+                    </p>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">
+                      {group.items.length} task{group.items.length === 1 ? "" : "s"}
+                    </span>
                   </div>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">
-                    {item.resolved ? "Done" : "Pending"}
-                  </span>
+                  {group.items.map((item) => (
+                    <div
+                      key={item.id}
+                      className={`flex items-center justify-between rounded-lg border px-4 py-3 text-sm ${
+                        item.resolved
+                          ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/40 dark:bg-emerald-500/10 dark:text-emerald-200"
+                          : "border-slate-100 text-slate-600 dark:border-slate-800 dark:text-slate-300"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`h-2 w-2 rounded-full ${
+                            item.resolved ? "bg-emerald-500" : "bg-rose-400"
+                          }`}
+                        />
+                        <div>
+                          <span>{item.name}</span>
+                          <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                            {item.assignee?.username ?? "Unassigned"}
+                          </div>
+                        </div>
+                      </div>
+                      <span className="text-xs text-slate-500 dark:text-slate-400">
+                        {item.resolved ? "Done" : "Pending"}
+                      </span>
+                    </div>
+                  ))}
+                  {group.items.length === 0 && (
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      No sub tasks found for this checklist.
+                    </p>
+                  )}
                 </div>
               ))}
-              {selectedSummary.subTasks.length === 0 && (
+              {selectedSummary.checklistGroups.length === 0 && (
                 <p className="text-xs text-slate-500 dark:text-slate-400">
                   No sub tasks found for this delivery type.
                 </p>
