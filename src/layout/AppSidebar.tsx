@@ -23,13 +23,13 @@ const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    subItems: [{ name: "Client Benny", path: "/", pro: false }],
+    subItems: [{ name: "PRD Clarence Valley - Benny Holder", path: "/", pro: false }],
   },
-  {
-    icon: <TableIcon />,
-    name: "Table Bord",
-    subItems: [{ name: "Client Benny", path: "/clickup-tasks", pro: false }],
-  },
+  // {
+  //   icon: <TableIcon />,
+  //   name: "Table Bord",
+  //   subItems: [{ name: "Client Benny", path: "/clickup-tasks", pro: false }],
+  // },
   {
     icon: <UserCircleIcon />,
     name: "User Profile",

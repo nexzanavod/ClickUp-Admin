@@ -186,20 +186,20 @@ export default function ClickUpTasks() {
     <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
       {!isLoading && !error && (deliveryTasks.monthly || deliveryTasks.weekly) && (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                    <MonthlyTarget
+            percent={weeklySummary.percent}
+            resolved={weeklySummary.resolvedItems}
+            total={weeklySummary.totalItems}
+            title="Weekly Delivery"
+            subtitle="Weekly delivery sign-off progress"
+            color="#10B981"
+          />
           <MonthlyTarget
             percent={monthlySummary.percent}
             resolved={monthlySummary.resolvedItems}
             total={monthlySummary.totalItems}
             title="Monthly Delivery"
             subtitle="Monthly delivery sign-off progress"
-            color="#10B981"
-          />
-          <MonthlyTarget
-            percent={weeklySummary.percent}
-            resolved={weeklySummary.resolvedItems}
-            total={weeklySummary.totalItems}
-            title="Weekly Delivery"
-            subtitle="Weekly delivery sign-off progress"
             color="#10B981"
           />
         </div>
@@ -215,6 +215,17 @@ export default function ClickUpTasks() {
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
+                    <button
+            type="button"
+            onClick={() => setDeliveryType("weekly")}
+            className={`rounded-2xl px-6 py-4 text-sm font-semibold transition-colors ${
+              deliveryType === "weekly"
+                ? "bg-brand-500 text-white"
+                : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200"
+            }`}
+          >
+            Weekly
+          </button>
           <button
             type="button"
             onClick={() => setDeliveryType("monthly")}
@@ -225,17 +236,6 @@ export default function ClickUpTasks() {
             }`}
           >
             Monthly
-          </button>
-          <button
-            type="button"
-            onClick={() => setDeliveryType("weekly")}
-            className={`rounded-2xl px-6 py-4 text-sm font-semibold transition-colors ${
-              deliveryType === "weekly"
-                ? "bg-brand-500 text-white"
-                : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200"
-            }`}
-          >
-            Weekly
           </button>
         </div>
       </div>
