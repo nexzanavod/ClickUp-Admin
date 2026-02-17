@@ -22,7 +22,10 @@ const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    subItems: [{ name: "PRD Clarence Valley - Benny Holder", path: "/", pro: false }],
+    path: "/",
+    subItems: [
+      { name: "PRD Clarence Valley - Benny Holder", path: "/clientbenny", pro: false },
+    ],
   },
   // {
   //   icon: <TableIcon />,
@@ -109,41 +112,76 @@ const AppSidebar: React.FC = () => {
       {items.map((nav, index) => (
         <li key={nav.name}>
           {nav.subItems ? (
-            <button
-              onClick={() => handleSubmenuToggle(index, menuType)}
-              className={`menu-item group ${
-                openSubmenu?.type === menuType && openSubmenu?.index === index
-                  ? "menu-item-active"
-                  : "menu-item-inactive"
-              } cursor-pointer ${
-                !isExpanded && !isHovered
-                  ? "lg:justify-center"
-                  : "lg:justify-start"
+            <div
+              className={`flex items-center gap-2 ${
+                !isExpanded && !isHovered ? "lg:justify-center" : "lg:justify-start"
               }`}
             >
-              <span
-                className={`menu-item-icon-size  ${
-                  openSubmenu?.type === menuType && openSubmenu?.index === index
-                    ? "menu-item-icon-active"
-                    : "menu-item-icon-inactive"
-                }`}
-              >
-                {nav.icon}
-              </span>
-              {(isExpanded || isHovered || isMobileOpen) && (
-                <span className="menu-item-text">{nav.name}</span>
-              )}
-              {(isExpanded || isHovered || isMobileOpen) && (
-                <ChevronDownIcon
-                  className={`ml-auto w-5 h-5 transition-transform duration-200 ${
-                    openSubmenu?.type === menuType &&
-                    openSubmenu?.index === index
-                      ? "rotate-180 text-brand-500"
-                      : ""
+              {nav.path ? (
+                <Link
+                  to={nav.path}
+                  className={`menu-item group flex-1 ${
+                    isActive(nav.path) ? "menu-item-active" : "menu-item-inactive"
                   }`}
-                />
+                >
+                  <span
+                    className={`menu-item-icon-size ${
+                      isActive(nav.path)
+                        ? "menu-item-icon-active"
+                        : "menu-item-icon-inactive"
+                    }`}
+                  >
+                    {nav.icon}
+                  </span>
+                  {(isExpanded || isHovered || isMobileOpen) && (
+                    <span className="menu-item-text">{nav.name}</span>
+                  )}
+                </Link>
+              ) : (
+                <button
+                  onClick={() => handleSubmenuToggle(index, menuType)}
+                  className={`menu-item group flex-1 ${
+                    openSubmenu?.type === menuType && openSubmenu?.index === index
+                      ? "menu-item-active"
+                      : "menu-item-inactive"
+                  } cursor-pointer`}
+                >
+                  <span
+                    className={`menu-item-icon-size  ${
+                      openSubmenu?.type === menuType && openSubmenu?.index === index
+                        ? "menu-item-icon-active"
+                        : "menu-item-icon-inactive"
+                    }`}
+                  >
+                    {nav.icon}
+                  </span>
+                  {(isExpanded || isHovered || isMobileOpen) && (
+                    <span className="menu-item-text">{nav.name}</span>
+                  )}
+                </button>
               )}
-            </button>
+              {(isExpanded || isHovered || isMobileOpen) && (
+                <button
+                  onClick={() => handleSubmenuToggle(index, menuType)}
+                  className={`menu-item group px-2 ${
+                    openSubmenu?.type === menuType && openSubmenu?.index === index
+                      ? "menu-item-active"
+                      : "menu-item-inactive"
+                  }`}
+                  aria-label={`${nav.name} submenu`}
+                  type="button"
+                >
+                  <ChevronDownIcon
+                    className={`w-5 h-5 transition-transform duration-200 ${
+                      openSubmenu?.type === menuType &&
+                      openSubmenu?.index === index
+                        ? "rotate-180 text-brand-500"
+                        : ""
+                    }`}
+                  />
+                </button>
+              )}
+            </div>
           ) : (
             nav.path && (
               <Link

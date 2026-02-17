@@ -32,6 +32,20 @@ export default function MonthlyTarget({
       sparkline: {
         enabled: true,
       },
+      animations: {
+        enabled: true,
+        speed: 800,
+        animateGradually: {
+          enabled: true,
+          delay: 150
+        },
+        dynamicAnimation: {
+          enabled: true,
+          speed: 350
+        }
+      },
+      background: 'transparent',
+      foreColor: '#1D2939'
     },
     plotOptions: {
       radialBar: {
@@ -43,7 +57,8 @@ export default function MonthlyTarget({
         track: {
           background: "#E4E7EC",
           strokeWidth: "100%",
-          margin: 5, // margin is in pixels
+          margin: 5,
+          opacity: 1
         },
         dataLabels: {
           name: {
@@ -64,6 +79,7 @@ export default function MonthlyTarget({
     fill: {
       type: "solid",
       colors: [color],
+      opacity: 1
     },
     stroke: {
       lineCap: "round",
@@ -115,7 +131,7 @@ export default function MonthlyTarget({
             </Dropdown>
           </div>
         </div>
-        <div className="relative ">
+        <div className="relative">
           <div className="max-h-[330px]" id="chartDarkStyle">
             <Chart
               options={options}

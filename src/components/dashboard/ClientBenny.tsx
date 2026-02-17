@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import Chart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
 import { fetchClickUpListTasks } from "../../dashboard/actions/clickup";
+import { type PrintDeliveryType } from "../../utils/print";
 import type { ClickUpTask } from "../../dashboard/types/clickup";
 import MonthlyTarget from "../ecommerce/MonthlyTarget";
 const MONTHLY_KEY = "monthly delivery sign off";
@@ -49,11 +50,21 @@ const buildAssigneeDonutOptions = (
   },
 });
 
-export default function ClickUpTasks() {
+type ClientBennyProps = {
+  deliveryType?: PrintDeliveryType;
+  onDeliveryTypeChange?: (type: PrintDeliveryType) => void;
+};
+
+export default function ClientBenny({
+  deliveryType,
+  onDeliveryTypeChange,
+}: ClientBennyProps) {
   const [tasks, setTasks] = useState<ClickUpTask[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [deliveryType, setDeliveryType] = useState<"monthly" | "weekly">(
+  const [internalDeliveryType, setInternalDeliveryType] = useState<
+    "monthly" | "weekly"
+  >(
     "weekly"
   );
   const [selectedAssignee, setSelectedAssignee] = useState("all");
@@ -97,8 +108,13 @@ export default function ClickUpTasks() {
     };
   }, [tasks]);
 
+  const activeDeliveryType = deliveryType ?? internalDeliveryType;
+  const updateDeliveryType = onDeliveryTypeChange ?? setInternalDeliveryType;
+
   const selectedDeliveryTask =
-    deliveryType === "monthly" ? deliveryTasks.monthly : deliveryTasks.weekly;
+    activeDeliveryType === "monthly"
+      ? deliveryTasks.monthly
+      : deliveryTasks.weekly;
 
   const buildSummary = (task: ClickUpTask | null) => {
     if (!task) {
@@ -149,7 +165,7 @@ export default function ClickUpTasks() {
   );
 
   const selectedSummary =
-    deliveryType === "monthly" ? monthlySummary : weeklySummary;
+    activeDeliveryType === "monthly" ? monthlySummary : weeklySummary;
 
   const assigneeStats = useMemo(() => {
     const stats = new Map<string, { name: string; done: number; total: number }>();
@@ -181,64 +197,57 @@ export default function ClickUpTasks() {
     return assigneeStats.filter((assignee) => assignee.name === selectedAssignee);
   }, [assigneeStats, selectedAssignee]);
 
-
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-      {!isLoading && !error && (deliveryTasks.monthly || deliveryTasks.weekly) && (
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                    <MonthlyTarget
-            percent={weeklySummary.percent}
-            resolved={weeklySummary.resolvedItems}
-            total={weeklySummary.totalItems}
-            title="Weekly Delivery"
-            subtitle="Weekly delivery sign-off progress"
-            color="#10B981"
-          />
-          <MonthlyTarget
-            percent={monthlySummary.percent}
-            resolved={monthlySummary.resolvedItems}
-            total={monthlySummary.totalItems}
-            title="Monthly Delivery"
-            subtitle="Monthly delivery sign-off progress"
-            color="#10B981"
-          />
-        </div>
-      )}
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
 
-      <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-            Delivery Sign-Off
-          </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Choose monthly or weekly and view the checklist tasks below.
-          </p>
-        </div>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap gap-3">
-                    <button
+          <button
             type="button"
-            onClick={() => setDeliveryType("weekly")}
-            className={`rounded-2xl px-6 py-4 text-sm font-semibold transition-colors ${
-              deliveryType === "weekly"
+            onClick={() => updateDeliveryType("weekly")}
+            className={`rounded-2xl px-6 py-4 text-sm font-semibold transition-colors ${activeDeliveryType === "weekly"
                 ? "bg-brand-500 text-white"
                 : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200"
-            }`}
+              }`}
           >
             Weekly
           </button>
           <button
             type="button"
-            onClick={() => setDeliveryType("monthly")}
-            className={`rounded-2xl px-6 py-4 text-sm font-semibold transition-colors ${
-              deliveryType === "monthly"
+            onClick={() => updateDeliveryType("monthly")}
+            className={`rounded-2xl px-6 py-4 text-sm font-semibold transition-colors ${activeDeliveryType === "monthly"
                 ? "bg-brand-500 text-white"
                 : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200"
-            }`}
+              }`}
           >
             Monthly
           </button>
         </div>
       </div>
+
+        {!isLoading && !error && (deliveryTasks.monthly || deliveryTasks.weekly) && (
+          <div className="grid grid-cols-1 gap-6">
+            {activeDeliveryType === "weekly" ? (
+              <MonthlyTarget
+                percent={weeklySummary.percent}
+                resolved={weeklySummary.resolvedItems}
+                total={weeklySummary.totalItems}
+                title="Weekly Delivery"
+                subtitle="Weekly delivery sign-off progress"
+                color="#10B981"
+              />
+            ) : (
+              <MonthlyTarget
+                percent={monthlySummary.percent}
+                resolved={monthlySummary.resolvedItems}
+                total={monthlySummary.totalItems}
+                title="Monthly Delivery"
+                subtitle="Monthly delivery sign-off progress"
+                color="#10B981"
+              />
+            )}
+          </div>
+        )}
 
       {!isLoading && !error && selectedDeliveryTask && (
         <div className="mt-6 grid grid-cols-1 gap-4">
@@ -277,7 +286,7 @@ export default function ClickUpTasks() {
         )}
         {!isLoading && !error && !selectedDeliveryTask && (
           <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50 p-6 text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-950">
-            No {deliveryType} delivery sign-off task found.
+            No {activeDeliveryType} delivery sign-off task found.
           </div>
         )}
 
@@ -309,7 +318,7 @@ export default function ClickUpTasks() {
                 </p>
               </div>
               <span className="rounded-lg bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
-                {deliveryType === "monthly" ? "MT" : "WT"} {" "}
+                {activeDeliveryType === "monthly" ? "MT" : "WT"}{" "}
                 {selectedSummary.resolvedItems}/{selectedSummary.totalItems}
               </span>
             </div>
@@ -440,6 +449,6 @@ export default function ClickUpTasks() {
           </div>
         )}
       </div>
-    </div>
+      </div>
   );
 }
