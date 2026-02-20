@@ -9,6 +9,12 @@ import {
 export default function ClientBennyPage() {
   const clientName = "Benny Holder";
   const projectName = "PRD Clarence Valley";
+  const teamId = import.meta.env.VITE_CLICKUP_TEAM_ID as string | undefined;
+  const listId = import.meta.env.VITE_CLICKUP_BENNY_LIST_ID as string | undefined;
+  const clickUpUrl =
+    teamId && listId
+      ? `https://app.clickup.com/${teamId}/v/l/li/${listId}`
+      : "https://app.clickup.com";
   const [deliveryType, setDeliveryType] = useState<PrintDeliveryType>("weekly");
   const [isPrinting, setIsPrinting] = useState(false);
   const pdfRef = useRef<HTMLDivElement>(null);
@@ -83,14 +89,29 @@ export default function ClientBennyPage() {
       <div ref={pdfRef}>
         {/* Header card */}
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <div className="space-y-1">
-            <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-200">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              Delivery Client
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-200">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                Delivery Client
+              </div>
+              <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
+                {projectName} - {clientName}
+              </h2>
             </div>
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
-              {projectName} - {clientName}
-            </h2>
+            <a
+              href={clickUpUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-violet-700"
+            >
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+              View in ClickUp
+            </a>
           </div>
         </div>
 

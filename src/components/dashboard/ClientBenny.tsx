@@ -11,6 +11,35 @@ const WEEKLY_KEY = "weekly delivery sign off";
 const normalizeTitle = (value: string) =>
   value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 
+/** Extract the period label from a task name, e.g.
+ *  "MONTHLY DELIVERY SIGN-OFF - February"  → "February"
+ *  "WEEKLY DELIVERY SIGN-OFF - 16/02/2026 - 20/02/2026"  → "16 Feb – 20 Feb 2026"
+ */
+const extractPeriodLabel = (taskName: string | undefined): string | null => {
+  if (!taskName) return null;
+
+  // Match everything after the first " - "
+  const match = taskName.match(/sign[\-\s]*off\s*-\s*(.+)$/i);
+  if (!match) return null;
+
+  const raw = match[1].trim();
+
+  // Try to parse weekly date range: "16/02/2026 - 20/02/2026"
+  const dateRange = raw.match(
+    /(\d{1,2})\/(\d{1,2})\/(\d{4})\s*-\s*(\d{1,2})\/(\d{1,2})\/(\d{4})/
+  );
+  if (dateRange) {
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const [, d1, m1, , d2, m2, y2] = dateRange;
+    const mon1 = months[parseInt(m1, 10) - 1] ?? m1;
+    const mon2 = months[parseInt(m2, 10) - 1] ?? m2;
+    return `${parseInt(d1)} ${mon1} – ${parseInt(d2)} ${mon2} ${y2}`;
+  }
+
+  // Otherwise return as-is (e.g. "February")
+  return raw;
+};
+
 const buildAssigneeDonutOptions = (
   percent: number,
   done: number,
@@ -111,6 +140,9 @@ export default function ClientBenny({
   const activeDeliveryType = deliveryType ?? internalDeliveryType;
   const updateDeliveryType = onDeliveryTypeChange ?? setInternalDeliveryType;
 
+  const weeklyPeriod = extractPeriodLabel(deliveryTasks.weekly?.name);
+  const monthlyPeriod = extractPeriodLabel(deliveryTasks.monthly?.name);
+
   const selectedDeliveryTask =
     activeDeliveryType === "monthly"
       ? deliveryTasks.monthly
@@ -205,22 +237,32 @@ export default function ClientBenny({
           <button
             type="button"
             onClick={() => updateDeliveryType("weekly")}
-            className={`rounded-2xl px-6 py-4 text-sm font-semibold transition-colors ${activeDeliveryType === "weekly"
+            className={`rounded-2xl px-6 py-4 text-left transition-colors ${activeDeliveryType === "weekly"
                 ? "bg-brand-500 text-white"
                 : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200"
               }`}
           >
-            Weekly
+            <span className="block text-sm font-semibold">Weekly</span>
+            {weeklyPeriod && (
+              <span className={`block mt-0.5 text-xs ${activeDeliveryType === "weekly" ? "text-white/70" : "text-slate-500 dark:text-slate-400"}`}>
+                {weeklyPeriod}
+              </span>
+            )}
           </button>
           <button
             type="button"
             onClick={() => updateDeliveryType("monthly")}
-            className={`rounded-2xl px-6 py-4 text-sm font-semibold transition-colors ${activeDeliveryType === "monthly"
+            className={`rounded-2xl px-6 py-4 text-left transition-colors ${activeDeliveryType === "monthly"
                 ? "bg-brand-500 text-white"
                 : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200"
               }`}
           >
-            Monthly
+            <span className="block text-sm font-semibold">Monthly</span>
+            {monthlyPeriod && (
+              <span className={`block mt-0.5 text-xs ${activeDeliveryType === "monthly" ? "text-white/70" : "text-slate-500 dark:text-slate-400"}`}>
+                {monthlyPeriod}
+              </span>
+            )}
           </button>
         </div>
       </div>
@@ -232,7 +274,7 @@ export default function ClientBenny({
                 percent={weeklySummary.percent}
                 resolved={weeklySummary.resolvedItems}
                 total={weeklySummary.totalItems}
-                title="Weekly Delivery"
+                title={weeklyPeriod ? `Weekly — ${weeklyPeriod}` : "Weekly Delivery"}
                 subtitle="Weekly delivery sign-off progress"
                 color="#10B981"
               />
@@ -241,7 +283,7 @@ export default function ClientBenny({
                 percent={monthlySummary.percent}
                 resolved={monthlySummary.resolvedItems}
                 total={monthlySummary.totalItems}
-                title="Monthly Delivery"
+                title={monthlyPeriod ? `Monthly — ${monthlyPeriod}` : "Monthly Delivery"}
                 subtitle="Monthly delivery sign-off progress"
                 color="#10B981"
               />
