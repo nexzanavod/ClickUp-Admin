@@ -25,6 +25,7 @@ const navItems: NavItem[] = [
     path: "/",
     subItems: [
       { name: "PRD Clarence Valley - Benny Holder", path: "/clientbenny", pro: false },
+      { name: "Huhme Project - Huhme", path: "/clienthuhme", pro: false },
     ],
   },
   // {

@@ -20,6 +20,7 @@ import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import ClickUpTasksTable from "./pages/Dashboard/ClickUpTasksTable";
 import ClientBennyPage from "./pages/Dashboard/ClientBenny";
+import ClientHuhmePage from "./pages/Dashboard/ClientHuhme";
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
           <Route element={<AppLayout />}>
             <Route index path="/" element={<Home />} />
             <Route path="/clientbenny" element={<ClientBennyPage />} />
+            <Route path="/clienthuhme" element={<ClientHuhmePage />} />
             <Route path="/clickup-tasks" element={<ClickUpTasksTable />} />
 
             {/* Others Page */}

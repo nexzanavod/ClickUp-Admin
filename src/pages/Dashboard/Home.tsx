@@ -55,6 +55,32 @@ export default function Home() {
               </div>
             </Link>
 
+            <Link
+              to="/clienthuhme"
+              className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-semibold uppercase text-emerald-600 dark:text-emerald-300">
+                    Active Client
+                  </p>
+                  <h2 className="mt-2 text-lg font-semibold text-slate-900 dark:text-white">
+                    Huhme Project - Huhme
+                  </h2>
+                  <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                    Monthly + weekly delivery sign-off
+                  </p>
+                </div>
+                <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-200">
+                  Open
+                </span>
+              </div>
+              <div className="mt-4 flex items-center gap-2 text-sm font-semibold text-emerald-600 dark:text-emerald-300">
+                Go to dashboard
+                <span className="transition-transform group-hover:translate-x-1">→</span>
+              </div>
+            </Link>
+
             <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-5 text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
               <p className="text-xs font-semibold uppercase text-slate-400">Coming Soon</p>
               <h2 className="mt-2 text-lg font-semibold text-slate-700 dark:text-slate-300">

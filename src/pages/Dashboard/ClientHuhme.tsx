@@ -6,11 +6,11 @@ import {
   type PrintDeliveryType,
 } from "../../utils/print";
 
-export default function ClientBennyPage() {
-  const clientName = "Benny Holder";
-  const projectName = "PRD Clarence Valley";
+export default function ClientHuhmePage() {
+  const clientName = "Huhme";
+  const projectName = "Huhme Project";
   const teamId = import.meta.env.VITE_CLICKUP_TEAM_ID as string | undefined;
-  const listId = import.meta.env.VITE_CLICKUP_BENNY_LIST_ID as string | undefined;
+  const listId = import.meta.env.VITE_CLICKUP_HUHME_LIST_ID as string | undefined;
   const clickUpUrl =
     teamId && listId
       ? `https://app.clickup.com/${teamId}/v/l/li/${listId}`
@@ -41,8 +41,8 @@ export default function ClientBennyPage() {
   return (
     <>
       <PageMeta
-        title="Client Benny Dashboard | TailAdmin"
-        description="Client Benny delivery sign-off dashboard"
+        title="Client Huhme Dashboard | TailAdmin"
+        description="Client Huhme delivery sign-off dashboard"
       />
 
       {/* Download buttons — outside the PDF capture area */}

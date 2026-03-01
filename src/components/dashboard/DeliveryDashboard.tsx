@@ -79,15 +79,17 @@ const buildAssigneeDonutOptions = (
   },
 });
 
-type ClientBennyProps = {
+type DeliveryDashboardProps = {
   deliveryType?: PrintDeliveryType;
   onDeliveryTypeChange?: (type: PrintDeliveryType) => void;
+  listId?: string;
 };
 
-export default function ClientBenny({
+export default function DeliveryDashboard({
   deliveryType,
   onDeliveryTypeChange,
-}: ClientBennyProps) {
+  listId,
+}: DeliveryDashboardProps) {
   const [tasks, setTasks] = useState<ClickUpTask[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -103,7 +105,7 @@ export default function ClientBenny({
 
     const loadTasks = async () => {
       try {
-        const data = await fetchClickUpListTasks();
+        const data = await fetchClickUpListTasks(listId);
         if (isMounted) {
           setTasks(data.tasks ?? []);
         }
@@ -123,7 +125,7 @@ export default function ClientBenny({
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [listId]);
 
   const deliveryTasks = useMemo(() => {
     const findTask = (keyword: string) =>
