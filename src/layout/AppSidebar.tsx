@@ -26,6 +26,13 @@ const navItems: NavItem[] = [
     subItems: [
       { name: "PRD Clarence Valley - Benny Holder", path: "/clientbenny", pro: false },
       { name: "Huhme Project - Huhme", path: "/clienthuhme", pro: false },
+      { name: "Viking Mortgages Project", path: "/clientvikingmortgages", pro: false },
+      { name: "Five Star Stays", path: "/clientfivestay", pro: false },
+      { name: "Phillis Real Estate", path: "/clientphillis", pro: false },
+      { name: "Finance Connect", path: "/clientfinance", pro: false },
+      { name: "PRD Northern Beaches", path: "/clientnorthernbeaches", pro: false },
+      { name: "PRD Tweed Coast", path: "/clienttweedcoast", pro: false },
+      { name: "Elders Real Estate - Benny Holder", path: "/clientelders", pro: false },
     ],
   },
   // {
