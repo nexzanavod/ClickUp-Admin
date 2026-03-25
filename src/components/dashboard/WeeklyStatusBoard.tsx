@@ -6,6 +6,8 @@ import { fetchClickUpListTasks } from "../../dashboard/actions/clickup";
 
 const WEEKLY_KEY = "weekly delivery sign off";
 const MONTHLY_KEY = "monthly delivery sign off";
+const WEEK_NUMBER = import.meta.env.VITE_CURRENT_WEEK_NUMBER ?? "";
+const WEEK_LABEL = WEEK_NUMBER ? `Week ${WEEK_NUMBER}` : "Weekly";
 
 const normalizeTitle = (value: string) =>
   value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -151,7 +153,6 @@ export default function WeeklyStatusBoard() {
   const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
   const [refreshing, setRefreshing] = useState(false);
   const [activeChart, setActiveChart] = useState<"weekly" | "monthly">("weekly");
-  const [activeList, setActiveList] = useState<"weekly" | "monthly">("weekly");
 
   const load = async () => {
     setRefreshing(true);
@@ -326,7 +327,7 @@ export default function WeeklyStatusBoard() {
                   : "bg-white text-slate-600 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
               }`}
             >
-              Weekly
+              {WEEK_LABEL}
             </button>
             <button
               type="button"
@@ -364,118 +365,10 @@ export default function WeeklyStatusBoard() {
         )}
       </div>
 
-      {/* Client-grouped Done / Pending Breakdown */}
-      {loaded && (
-        <div className="border-b border-slate-100 px-6 py-5 dark:border-slate-800">
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-              Client Breakdown — Done &amp; Pending
-            </h3>
-            <div className="flex overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
-              <button
-                type="button"
-                onClick={() => setActiveList("weekly")}
-                className={`px-4 py-1.5 text-xs font-semibold transition ${
-                  activeList === "weekly"
-                    ? "bg-brand-500 text-white"
-                    : "bg-white text-slate-600 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
-                }`}
-              >
-                Weekly
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveList("monthly")}
-                className={`px-4 py-1.5 text-xs font-semibold transition ${
-                  activeList === "monthly"
-                    ? "bg-brand-500 text-white"
-                    : "bg-white text-slate-600 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
-                }`}
-              >
-                Monthly
-              </button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {statuses.map((client) => {
-              const prog = activeList === "weekly" ? client.weekly : client.monthly;
-              const items = prog?.items ?? [];
-              const doneItems = items.filter((i) => i.resolved);
-              const pendingItems = items.filter((i) => !i.resolved);
-              const percent = prog?.percent ?? 0;
-              const is100 = percent === 100;
-              const noData = !prog;
-
-              return (
-                <Link
-                  key={client.path}
-                  to={client.path}
-                  className="group rounded-xl border border-slate-200 bg-white p-4 transition hover:shadow-md dark:border-slate-800 dark:bg-slate-950"
-                >
-                  {/* Client name + status badge */}
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="text-sm font-semibold text-slate-800 group-hover:text-brand-600 dark:text-slate-100">
-                      {client.name.replace(" – Benny Holder", "").replace(" Project", "")}
-                    </p>
-                    {noData ? (
-                      <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500 dark:bg-slate-800 dark:text-slate-400">
-                        No data
-                      </span>
-                    ) : is100 ? (
-                      <span className="shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300">
-                        ✓ Complete
-                      </span>
-                    ) : (
-                      <span className="shrink-0 rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-semibold text-rose-700 dark:bg-rose-500/20 dark:text-rose-300">
-                        {pendingItems.length} pending
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Progress bar */}
-                  {!noData && (
-                    <div className="mt-2 flex items-center gap-2">
-                      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
-                        <div
-                          className={`h-full rounded-full ${is100 ? "bg-emerald-500" : "bg-rose-500"}`}
-                          style={{ width: `${percent}%` }}
-                        />
-                      </div>
-                      <span className={`text-xs font-bold tabular-nums ${is100 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}>
-                        {percent}%
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Done / Pending pill counts */}
-                  {!noData && (
-                    <div className="mt-3 flex gap-2">
-                      <div className="flex items-center gap-1.5 rounded-lg bg-emerald-50 px-3 py-1.5 dark:bg-emerald-500/10">
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                        <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">
-                          {doneItems.length} done
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1.5 rounded-lg bg-rose-50 px-3 py-1.5 dark:bg-rose-500/10">
-                        <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
-                        <span className="text-xs font-semibold text-rose-700 dark:text-rose-400">
-                          {pendingItems.length} pending
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
       {/* Column headers */}
       <div className="grid grid-cols-[1fr_180px_180px] gap-4 border-b border-slate-100 px-6 py-2 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:border-slate-800 dark:text-slate-500">
         <span>Client</span>
-        <span>Weekly</span>
+        <span>{WEEK_LABEL}</span>
         <span>Monthly</span>
       </div>
 
